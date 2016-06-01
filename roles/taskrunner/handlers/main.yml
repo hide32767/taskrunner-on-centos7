@@ -1,0 +1,6 @@
+---
+
+- name: RESTART_TASKRUNNER
+  service: name=taskrunner state=restarted
+
+...

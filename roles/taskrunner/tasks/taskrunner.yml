@@ -1,0 +1,52 @@
+---
+
+- name: be sure JRE installed
+  yum: name={{ item }}
+  with_items: '{{ packages }}'
+
+- name: be sure several directories for Data Pipeline existed
+  file: >
+    path={{ item }}
+    state=directory
+    owner=root
+    group=root
+    mode=0755
+  with_items:
+    - "{{ datapipeline.base_dir }}"
+    - "{{ datapipeline.bin_dir }}"
+    - "{{ datapipeline.conf_dir }}"
+
+- name: be sure the jarfile of Task Runner existed
+  get_url: >
+    url={{ taskrunner.jar_uri }}
+    dest={{ datapipeline.bin_dir }}/TaskRunner.jar
+    owner=root
+    group=root
+    mode=0644
+
+- name: be sure the configuration file of Task Runner existed
+  template: >
+    src=config.json.j2
+    dest={{ datapipeline.conf_dir }}/config.json
+    owner=root
+    group=root
+    mode=0600
+
+- name: be sure the unitfile of Task Runner existed
+  copy: >
+    src=taskrunner.service
+    dest=/etc/systemd/system/taskrunner.service
+    owner=root
+    group=root
+    mode=0755
+  register: taskrunner_unitfile
+
+- name: be sure the unitfile of Task Runner reloaded
+  command: systemctl daemon-reload
+  when: taskrunner_unitfile|changed
+  notify: RESTART_TASKRUNNER
+
+- name: be sure taskrunner service started
+  service: name=taskrunner enabled=yes state=started
+
+...

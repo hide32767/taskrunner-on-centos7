@@ -1,0 +1,19 @@
+---
+
+datapipeline:
+  base_dir: /var/lib/datapipeline
+  bin_dir: /var/lib/datapipeline/bin
+  conf_dir: /var/lib/datapipeline/etc
+
+taskrunner:
+  jar_uri: https://s3.amazonaws.com/datapipeline-us-east-1/us-east-1/software/latest/TaskRunner/TaskRunner-1.0.jar
+  access_key: <YOUR_ACCESS_KEY>
+  private_key: <YOUR_SECRET_KEY>
+  region: <YOUR_REGION>
+  log_uri: <YOUR_BUCKET>
+  workergroup: <YOUR_WORKGROUP>
+
+packages:
+  - java-1.8.0-openjdk.x86_64
+
+...

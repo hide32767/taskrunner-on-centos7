@@ -1,0 +1,18 @@
+[Unit]
+Description=Data Pipeline Task Runner
+After=network.target
+
+[Service]
+TimeoutStartSec=0
+Type=simple
+Environment="DP_BASE=/var/lib/datapipeline"
+Environment="TASKRUNNER=bin/TaskRunner.jar"
+Environment="CONFIG=etc/config.json"
+ExecStart=/bin/java \
+  -server -Xms64m -Xmx64m \
+  -jar ${DP_BASE}/${TASKRUNNER} \
+  --config ${DP_BASE}/${CONFIG}
+ExecStop=/bin/kill -s KILL ${MAINPID}
+
+[Install]
+WantedBy=multi-user.target
